@@ -1,1 +1,1 @@
-return "hi"
+return require(script.Quant)
