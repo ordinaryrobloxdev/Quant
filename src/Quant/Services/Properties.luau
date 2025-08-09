@@ -1,5 +1,16 @@
+local Initalized = false
 local mod = {}
 mod.__index = mod
+local Events
+
+function mod.Init()
+    if Initalized then
+        return
+    end
+    Initalized = true
+
+    Events = mod.Get("Events")
+end
 
 function mod.new(obj:Instance, Type:string)
     if not obj:IsA("Instance") or (Type and typeof(Type) ~= "string") then
@@ -42,9 +53,11 @@ function mod:Get(property:string)
 end
 
 function mod:Set(property:string, value:any)
-    if typeof(property) ~= "string" or not value then
+    if typeof(property) ~= "string" or value == nil then
         error("Invalid arguments")
     end
+    
+    local Event = Events.GetEvent("Property Changed") or Events.CreateEvent("Property Changed")
 
     if self.Type:lower() == "attribute" then
         self.obj:SetAttribute(property, value)
@@ -59,6 +72,8 @@ function mod:Set(property:string, value:any)
         objvalue.Name = property
         objvalue.Value = value
     end
+
+    Event:Fire(self.obj, property, value)
 end
 
 function mod:Remove(property)

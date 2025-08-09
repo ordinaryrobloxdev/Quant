@@ -1,20 +1,26 @@
 local Players = game:GetService("Players")
 local Initalized = false
 local mod = {}
-mod.PlayerJoin = Players.PlayerAdded
-mod.PlayerLeave = Players.PlayerRemoving
-local Properties
 
 function mod.Init()
     if Initalized then
         return
     end
     Initalized = true
-    Properties = mod.Get("Properties")
+    local Properties = mod.Get("Properties")
+    local Events = mod.Get("Events")
 
-    mod.PlayerJoin:Connect(function(player)
-        local PlayerProps = Properties.new(player)
+    Players.PlayerAdded:Connect(function(plr)
+        local Event = Events.GetEvent("Player Joined") or Events.CreateEvent("Player Joined")
+        local PlayerProps = Properties.new(plr)
         PlayerProps:Set("Join time", tick())
+        PlayerProps:Set("State", "Idle")
+        Event:Fire(plr)
+    end)
+
+    Players.PlayerRemoving:Connect(function(plr)
+        local Event = Events.GetEvent("Player Left") or Events.CreateEvent("Player Left")
+        Event:Fire(plr)
     end)
 end
 

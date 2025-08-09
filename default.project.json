@@ -12,6 +12,10 @@
     "ServerScriptService": {
       "Server": {
         "$path": "src/server"
+      },
+
+      "Quant": {
+        "$path": "src/Quant"
       }
     },
 
